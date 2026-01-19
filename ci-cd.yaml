@@ -52,27 +52,39 @@ jobs:
           EC2_HOST: ${{ secrets.EC2_HOST }}
           EC2_USER: ${{ secrets.EC2_USER }}
           EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_HUB_REPO: ${{ env.DOCKER_HUB_REPO }}
+          DOCKER_IMAGE_NAME: ${{ env.DOCKER_IMAGE_NAME }}
         run: |
           echo "$EC2_SSH_KEY" > ec2_key.pem
           chmod 600 ec2_key.pem
-          ssh -i ec2_key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
+          ssh -i ec2_key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << EOF
             # Login to Docker Hub
-            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin || exit 1
           
             # Pull latest image
-            docker pull ${{ env.DOCKER_HUB_REPO }}:latest
+            docker pull $DOCKER_HUB_REPO:latest || exit 1
           
             # Stop and remove existing container
-            docker stop ${{ env.DOCKER_IMAGE_NAME }} || true
-            docker rm ${{ env.DOCKER_IMAGE_NAME }} || true
+            docker stop $DOCKER_IMAGE_NAME || true
+            docker rm $DOCKER_IMAGE_NAME || true
+          
+            # Check if .env.prod exists, if not warn but continue
+            if [ ! -f .env.prod ]; then
+              echo "Warning: .env.prod file not found. Container will start without env-file."
+              ENV_FILE_FLAG=""
+            else
+              ENV_FILE_FLAG="--env-file .env.prod"
+            fi
           
             # Run new container
             docker run -d \
-              --name ${{ env.DOCKER_IMAGE_NAME }} \
+              --name $DOCKER_IMAGE_NAME \
               --restart unless-stopped \
               -p 8080:8080 \
-              --env-file .env.prod \
-              ${{ env.DOCKER_HUB_REPO }}:latest
+              $ENV_FILE_FLAG \
+              $DOCKER_HUB_REPO:latest || exit 1
           
             # Clean up old images
             docker image prune -af --filter "until=168h"

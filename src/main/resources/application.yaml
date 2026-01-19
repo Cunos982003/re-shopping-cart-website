@@ -32,5 +32,8 @@ spring:
     activate:
       on-profile: prod
 
+  thymeleaf:
+    cache: true
+
   jpa:
     show-sql: false
