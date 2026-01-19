@@ -5,8 +5,7 @@ WORKDIR /app
 # Copy Gradle files
 COPY build.gradle settings.gradle gradlew ./
 COPY gradle/ ./gradle/
-COPY gradlew
-
+COPY gradlew ./
 # Copy source code
 COPY src/ ./src/
 
