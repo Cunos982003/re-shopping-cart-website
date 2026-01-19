@@ -2,12 +2,10 @@
 FROM gradle:8.10-jdk21-alpine AS build
 WORKDIR /app
 
-# Copy Gradle files
-COPY gradle gradle
+# Copy Gradle wrapper and build scripts
+COPY gradle/ ./gradle/
 COPY gradlew .
 COPY build.gradle settings.gradle ./
-RUN chmod +x gradlew
-RUN ./gradlew dependencies
 
 # Copy source code
 COPY src/ ./src/
