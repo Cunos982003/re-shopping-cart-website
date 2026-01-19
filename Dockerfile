@@ -2,10 +2,9 @@
 FROM gradle:8.10-jdk21-alpine AS build
 WORKDIR /app
 
-# Copy Gradle wrapper and build scripts
+# Copy Gradle files
+COPY build.gradle settings.gradle gradlew ./
 COPY gradle/ ./gradle/
-COPY gradlew .
-COPY build.gradle settings.gradle ./
 
 # Copy source code
 COPY src/ ./src/
@@ -41,4 +40,3 @@ ENTRYPOINT ["java", \
   "-XX:MaxRAMPercentage=75.0", \
   "-jar", \
   "app.jar"]
-
