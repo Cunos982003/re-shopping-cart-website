@@ -74,6 +74,13 @@ jobs:
               --env-file .env.prod \
               ${{ env.DOCKER_HUB_REPO }}:latest
           
+            # Verify container is running
+            sleep 5
+            docker ps | grep ${{ env.DOCKER_IMAGE_NAME }} || exit 1
+            
+            # Test health endpoint locally
+            curl -f http://localhost:8080/actuator/health || echo "Warning: Health check failed"
+          
             # Clean up old images
             docker image prune -af --filter "until=168h"
           EOF
