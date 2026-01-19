@@ -3,9 +3,11 @@ FROM gradle:8.10-jdk21-alpine AS build
 WORKDIR /app
 
 # Copy Gradle files
-COPY build.gradle settings.gradle gradlew ./
-COPY gradle/ ./gradle/
-COPY gradlew ./
+COPY gradle gradle
+COPY gradlew .
+COPY build.gradle settings.gradle ./
+RUN chmod +x gradlew
+RUN ./gradlew dependencies
 
 # Copy source code
 COPY src/ ./src/
