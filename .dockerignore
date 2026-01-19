@@ -1,65 +1,54 @@
-# =====================
-# Git / IDE
-# =====================
-.git
-.idea
-.vscode
+# Build artifacts
+build/
+bin/
+out/
+.gradle/
+*.class
+*.jar
+*.war
+*.ear
+
+# IDE files
+.idea/
+.vscode/
 *.iml
 *.ipr
 *.iws
 .classpath
 .project
-.settings
-.DS_Store
+.settings/
+.apt_generated/
 
-# =====================
-# Build output & cache
-# =====================
-build/
-bin/
-out/
-.gradle/
+# Version control
+.git/
+.gitignore
+.gitattributes
 
-# =====================
-# Gradle Wrapper (REQUIRED)
-# =====================
-!gradle
-!gradle/**
-!gradlew
-!gradlew.bat
-
-# =====================
-# Environment files
-# =====================
-.env
-.env.*
-!.env.example
-
-# =====================
-# Docs
-# =====================
+# Documentation
 *.md
-README.md
 HELP.md
 
-# =====================
-# Tests (optional)
-# =====================
+# Environment files (will be provided at runtime)
+.env
+.env.local
+.env.prod
+
+# Test files
 src/test/
+*.test
+test-results/
 
-# =====================
-# Logs & temp
-# =====================
-*.log
-logs/
-tmp/
-temp/
-*.tmp
-
-# =====================
 # OS files
-# =====================
+.DS_Store
 Thumbs.db
 *.swp
 *.swo
 *~
+
+# CI/CD files (not needed in image)
+.github/
+ci-cd.yaml
+
+# Logs
+*.log
+logs/
